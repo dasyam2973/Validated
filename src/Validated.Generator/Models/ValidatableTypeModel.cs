@@ -7,13 +7,20 @@ public sealed class ValidatableTypeModel : IEquatable<ValidatableTypeModel>
     public string Namespace { get; }
     public string TypeName { get; }
     public string DeclarationKeyword { get; }
+    public EquatableArray<ContainingTypeModel> ContainingTypes { get; }
     public EquatableArray<ValidatablePropertyModel> Properties { get; }
 
-    public ValidatableTypeModel(string namespaceName, string typeName, string declarationKeyword, EquatableArray<ValidatablePropertyModel> properties)
+    public ValidatableTypeModel(
+        string namespaceName,
+        string typeName,
+        string declarationKeyword,
+        EquatableArray<ContainingTypeModel> containingTypes,
+        EquatableArray<ValidatablePropertyModel> properties)
     {
         Namespace = namespaceName;
         TypeName = typeName;
         DeclarationKeyword = declarationKeyword;
+        ContainingTypes = containingTypes;
         Properties = properties;
     }
 
@@ -22,6 +29,7 @@ public sealed class ValidatableTypeModel : IEquatable<ValidatableTypeModel>
         return Namespace.Equals(other.Namespace) &&
             TypeName.Equals(other.TypeName) &&
             DeclarationKeyword.Equals(other.DeclarationKeyword) &&
+            ContainingTypes.Equals(other.ContainingTypes) &&
             Properties.Equals(other.Properties);
     }
 

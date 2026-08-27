@@ -111,10 +111,25 @@ public class ValidatorGenerator : IIncrementalGenerator
         if (propertiesBuilder.Count == 0)
             return new() { Model = null, Diagnostics = diagnostics.ToEquatableArray() };
 
+        // 상위 타입 추출
+        List<ContainingTypeModel> containingTypes = new();
+        var current = typeSymbol.ContainingType;
+
+        while (current != null)
+        {
+            string keyword = current.GetTypeDeclarationKeyword();
+
+            containingTypes.Add(new ContainingTypeModel(current.Name, keyword));
+            current = current.ContainingType;
+        }
+
+        containingTypes.Reverse();
+
         ValidatableTypeModel typeModel = new(
             namespaceName: typeSymbol.ContainingNamespace.IsGlobalNamespace ? string.Empty : typeSymbol.ContainingNamespace.ToDisplayString(),
             typeName: typeSymbol.Name,
             declarationKeyword: typeSymbol.GetTypeDeclarationKeyword(),
+            containingTypes: containingTypes.ToEquatableArray(),
             properties: propertiesBuilder.ToEquatableArray()
         );
 

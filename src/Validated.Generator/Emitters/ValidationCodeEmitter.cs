@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Validated.Generator.Models;
 
@@ -24,138 +25,154 @@ internal static class ValidationCodeEmitter
 
         using (builder.Block($"namespace {typeModel.Namespace}"))
         {
-            using (builder.Block($"public partial {typeModel.DeclarationKeyword} {typeModel.TypeName} : global::Validated.IValidatable<{typeModel.TypeName}>"))
+            List<IDisposable> parentBlocks = new();
+            try
             {
-                #region bool IsValid
-                foreach (var decl in staticDeclarations)
+                foreach (var parent in typeModel.ContainingTypes)
                 {
-                    builder.Line(decl);
+                    parentBlocks.Add(builder.Block($"partial {parent.DeclarationKeyword} {parent.TypeName}"));
                 }
 
-                if (staticDeclarations.Count > 0)
+                using (builder.Block($"partial {typeModel.DeclarationKeyword} {typeModel.TypeName} : global::Validated.IValidatable<{typeModel.TypeName}>"))
+                {
+                    #region bool IsValid
+                    foreach (var decl in staticDeclarations)
+                    {
+                        builder.Line(decl);
+                    }
+
+                    if (staticDeclarations.Count > 0)
+                        builder.Line();
+
+                    var allConditions = typeModel.Properties
+                        .SelectMany(p => p.Rules.Select(r => r.BuildCondition($"this.{p.Name}", p.Name)))
+                        .ToList();
+
+                    if (allConditions.Count > 0)
+                    {
+                        builder.Line($"public bool IsValid =>");
+                        for (int i = 0; i < allConditions.Count; i++)
+                        {
+                            var condition = allConditions[i];
+                            builder.Line($"    {condition}{(i + 1 < allConditions.Count ? " &&" : ";")}");
+                        }
+                    }
+                    else
+                    {
+                        builder.Line("public bool IsValid => true;");
+                    }
+                    #endregion
+
                     builder.Line();
 
-                var allConditions = typeModel.Properties
-                    .SelectMany(p => p.Rules.Select(r => r.BuildCondition($"this.{p.Name}", p.Name)))
-                    .ToList();
-
-                if (allConditions.Count > 0)
-                {
-                    builder.Line($"public bool IsValid =>");
-                    for (int i = 0; i < allConditions.Count; i++)
+                    #region ValidationResult Validate()
+                    using (builder.Block("public global::Validated.ValidationResult Validate()"))
                     {
-                        var condition = allConditions[i];
-                        builder.Line($"    {condition}{(i + 1 < allConditions.Count ? " &&" : ";")}");
-                    }
-                }
-                else
-                {
-                    builder.Line("public bool IsValid => true;");
-                }
-                #endregion
+                        builder.Line("var errors = new global::System.Collections.Generic.List<global::Validated.ValidationError>();");
 
-                builder.Line();
-
-                #region ValidationResult Validate()
-                using (builder.Block("public global::Validated.ValidationResult Validate()"))
-                {
-                    builder.Line("var errors = new global::System.Collections.Generic.List<global::Validated.ValidationError>();");
-
-                    foreach (var property in typeModel.Properties)
-                    {
-                        string targetProperty = $"this.{property.Name}";
-
-                        foreach (var rule in property.Rules)
+                        foreach (var property in typeModel.Properties)
                         {
-                            var (failCondition, errorExpression) = rule.BuildErrorCheck(targetProperty, property.Name);
+                            string targetProperty = $"this.{property.Name}";
 
-                            using (builder.Block($"if ({failCondition})"))
+                            foreach (var rule in property.Rules)
                             {
-                                builder.Line($"errors.Add({errorExpression});");
+                                var (failCondition, errorExpression) = rule.BuildErrorCheck(targetProperty, property.Name);
+
+                                using (builder.Block($"if ({failCondition})"))
+                                {
+                                    builder.Line($"errors.Add({errorExpression});");
+                                }
+
+                                builder.Line();
                             }
-
-                            builder.Line();
                         }
+
+                        builder.Line("return new global::Validated.ValidationResult(errors);");
                     }
+                    #endregion
 
-                    builder.Line("return new global::Validated.ValidationResult(errors);");
-                }
-                #endregion
+                    builder.Line();
 
-                builder.Line();
-
-                #region bool TryValidate(ValidationError error)
-                using (builder.Block("public bool TryValidate(out global::Validated.ValidationError error)"))
-                {
-                    foreach (var property in typeModel.Properties)
-                    {
-                        string targetProperty = $"this.{property.Name}";
-
-                        foreach (var rule in property.Rules)
-                        {
-                            var (failCondition, errorExpression) = rule.BuildErrorCheck(targetProperty, property.Name);
-
-                            using (builder.Block($"if ({failCondition})"))
-                            {
-                                builder.Line($"error = {errorExpression};");
-                                builder.Line("return false;");
-                            }
-
-                            builder.Line();
-                        }
-                    }
-
-                    builder.Line("error = default;");
-                    builder.Line("return true;");
-                }
-                #endregion
-
-                builder.Line();
-
-                #region bool TryValidateProperty(string propertyName, out ValidationError error)
-                using (builder.Block("public bool TryValidateProperty(string propertyName, out global::Validated.ValidationError error)"))
-                {
-                    using (builder.Block("switch (propertyName)"))
+                    #region bool TryValidate(ValidationError error)
+                    using (builder.Block("public bool TryValidate(out global::Validated.ValidationError error)"))
                     {
                         foreach (var property in typeModel.Properties)
                         {
-                            if (property.Rules.IsEmpty) continue;
-
                             string targetProperty = $"this.{property.Name}";
 
-                            builder.Line($"case nameof({targetProperty}):");
-
-                            using (builder.Indent())
+                            foreach (var rule in property.Rules)
                             {
-                                foreach (var rule in property.Rules)
-                                {
-                                    var (failCondition, errorExpression) = rule.BuildErrorCheck(targetProperty, property.Name);
+                                var (failCondition, errorExpression) = rule.BuildErrorCheck(targetProperty, property.Name);
 
-                                    using (builder.Block($"if ({failCondition})"))
-                                    {
-                                        builder.Line($"error = {errorExpression};");
-                                        builder.Line("return false;");
-                                    }
+                                using (builder.Block($"if ({failCondition})"))
+                                {
+                                    builder.Line($"error = {errorExpression};");
+                                    builder.Line("return false;");
                                 }
 
-                                builder.Line("break;");
+                                builder.Line();
                             }
-
-                            builder.Line();
                         }
 
-                        builder.Line("default:");
-                        using (builder.Indent())
-                        {
-                            builder.Line("break;");
-                        }
+                        builder.Line("error = default;");
+                        builder.Line("return true;");
                     }
+                    #endregion
 
                     builder.Line();
-                    builder.Line("error = default;");
-                    builder.Line("return true;");
+
+                    #region bool TryValidateProperty(string propertyName, out ValidationError error)
+                    using (builder.Block("public bool TryValidateProperty(string propertyName, out global::Validated.ValidationError error)"))
+                    {
+                        using (builder.Block("switch (propertyName)"))
+                        {
+                            foreach (var property in typeModel.Properties)
+                            {
+                                if (property.Rules.IsEmpty) continue;
+
+                                string targetProperty = $"this.{property.Name}";
+
+                                builder.Line($"case nameof({targetProperty}):");
+
+                                using (builder.Indent())
+                                {
+                                    foreach (var rule in property.Rules)
+                                    {
+                                        var (failCondition, errorExpression) = rule.BuildErrorCheck(targetProperty, property.Name);
+
+                                        using (builder.Block($"if ({failCondition})"))
+                                        {
+                                            builder.Line($"error = {errorExpression};");
+                                            builder.Line("return false;");
+                                        }
+                                    }
+
+                                    builder.Line("break;");
+                                }
+
+                                builder.Line();
+                            }
+
+                            builder.Line("default:");
+                            using (builder.Indent())
+                            {
+                                builder.Line("break;");
+                            }
+                        }
+
+                        builder.Line();
+                        builder.Line("error = default;");
+                        builder.Line("return true;");
+                    }
+                    #endregion
                 }
-                #endregion
+            }
+            finally
+            {
+                for (int i = parentBlocks.Count - 1; i >= 0; i--)
+                {
+                    parentBlocks[i].Dispose();
+                }
             }
         }
 

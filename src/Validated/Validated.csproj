@@ -4,6 +4,26 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Validated</PackageId>
+    <Title>Validated</Title>
+	<Version>1.0.0</Version>
+    <Authors>Dasyam</Authors>
+    <RepositoryUrl>https://github.com/dasyam2973/Validated</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Validated.Generator\Validated.Generator.csproj"
+					  OutputItemType="Analyzer"
+					  ReferenceOutputAssembly="false" />
+	<!-- <PackageReference Include="Validated.Generator" Version="1.0.0" PrivateAssets="analyzers" /> -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>
