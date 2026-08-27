@@ -25,7 +25,7 @@ if (!result.IsValid)
 {
     foreach (var error in result.Errors)
     {
-       Console.WriteLine($"[{error.PropertyName}] {error.Message}");
+        Console.WriteLine($"[{error.PropertyName}] {error.Message}");
     }
 }
 
