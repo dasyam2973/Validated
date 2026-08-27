@@ -9,14 +9,14 @@ using Validated;
 using Validated.Annotations;
 
 [Validatable]
-public partial record UserRegistrationRequest()
+public partial record UserRegistrationRequest(string Username, int Age, DateTime StartDate, DateTime EndDate)
 {
-    [property: VStringLength(3, 20)] public string Username { get; }
-    [property: VRange(18, 100)] public int Age { get; }
+    [property: VStringLength(3, 20)] public string Username { get; } = Username;
+    [property: VRange(18, 100)] public int Age { get; } = Age;
 
-    public DateTime StartDate { get; }
-    [property: VGreaterThanOrEqual(nameof(StartDate))] public DateTime EndDate { get; }
-}
+    public DateTime StartDate { get; } = StartDate;
+    [property: VGreaterThanOrEqual(nameof(StartDate))] public DateTime EndDate { get; } = EndDate;
+};
 
 UserRegistrationRequest request = new("dev_user", 25, DateTime.Now, DateTime.Now.AddDays(1));
 ValidationResult result = request.Validate();
@@ -25,7 +25,7 @@ if (!result.IsValid)
 {
     foreach (var error in result.Errors)
     {
-        Console.WriteLine($"[{error.PropertyName}] {error.ErrorMessage}");
+       Console.WriteLine($"[{error.PropertyName}] {error.Message}");
     }
 }
 
