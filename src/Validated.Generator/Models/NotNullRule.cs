@@ -26,7 +26,7 @@ public sealed class NotNullRule : ValidationRule
                 .Replace("{0}", propertyName)
             : defaultMessage;
 
-        string errorExpression = $"new global::Validated.ValidationError(nameof({targetProperty}), \"{finalMessage}\", \"NotNull\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"NotNull\")";
 
         return (failCondition, errorExpression);
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Validated.Generator.Constants;
+using Validated.Generator.Enums;
 
 namespace Validated.Generator.Models;
 
@@ -48,7 +49,7 @@ public sealed class ComparisonRule : ValidationRule
                 .Replace("{1}", OtherPropertyName)
             : defaultMessage;
 
-        string errorExpression = $"new global::Validated.ValidationError(nameof({targetProperty}), \"{finalMessage}\", \"Comparsion\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"Comparsion\")";
 
         return (failCondition, errorExpression);
     }

@@ -1,4 +1,4 @@
-﻿namespace Validated.Generator;
+﻿namespace Validated.Generator.Enums;
 
 public enum ComparisonOperator
 {

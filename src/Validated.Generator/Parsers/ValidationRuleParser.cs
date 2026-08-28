@@ -11,8 +11,11 @@ public static class ValidationRuleParser
     private static readonly Dictionary<string, IAttributeRuleParser> Parsers = new IAttributeRuleParser[]
     {
         new NotNullAttributeParser(),
+        new NotEmptyAttributeParser(),
         new RangeAttributeParser(),
         new StringLengthAttributeParser(),
+        new LengthAttributeParser(),
+
         new RegexAttributeParser(),
 
         new GreaterThanOrEqualAttributeParser(),

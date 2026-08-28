@@ -93,7 +93,7 @@ internal static class ValidationCodeEmitter
 
                     builder.Line();
 
-                    #region bool TryValidate(ValidationError error)
+                    #region bool TryValidate(out ValidationError error)
                     using (builder.Block("public bool TryValidate(out global::Validated.ValidationError error)"))
                     {
                         foreach (var property in typeModel.Properties)

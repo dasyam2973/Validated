@@ -41,7 +41,7 @@ public sealed class RegexRule : ValidationRule
                 .Replace("{Pattern}", Pattern)
             : defaultMessage;
 
-        string errorExpression = $"new global::Validated.ValidationError(nameof({targetProperty}), \"{finalMessage}\", \"Regex\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"Regex\")";
 
         return (failCondition, errorExpression);
     }

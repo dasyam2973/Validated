@@ -33,7 +33,7 @@ public sealed class StringLengthRule : ValidationRule
                 .Replace("{2}", Max.ToString())
             : defaultMessage;
 
-        string errorExpression = $"new global::Validated.ValidationError(nameof({targetProperty}), \"{finalMessage}\", \"StringLength\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"StringLength\")";
 
         return (failCondition, errorExpression);
     }

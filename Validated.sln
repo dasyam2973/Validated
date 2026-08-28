@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validated.Generator", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validated.Sample.Analyzer", "samples\Validated.Sample.Analyzer\Validated.Sample.Analyzer.csproj", "{DB1BA428-92F8-FBAE-7947-7D06B29E0EBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validated.Playground", "samples\Validated.Playground\Validated.Playground.csproj", "{2129077C-2B34-59AA-F78D-99320B1D73A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{DB1BA428-92F8-FBAE-7947-7D06B29E0EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB1BA428-92F8-FBAE-7947-7D06B29E0EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB1BA428-92F8-FBAE-7947-7D06B29E0EBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2129077C-2B34-59AA-F78D-99320B1D73A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2129077C-2B34-59AA-F78D-99320B1D73A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2129077C-2B34-59AA-F78D-99320B1D73A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2129077C-2B34-59AA-F78D-99320B1D73A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{42CCCBD8-8E6C-1ED3-6FCA-F04AC28D2160} = {51EABD1F-0DBC-4D2B-8DD6-50F7B1E773ED}
 		{BE3630E8-891B-96CA-1AB1-7B759DE52F6E} = {51EABD1F-0DBC-4D2B-8DD6-50F7B1E773ED}
 		{DB1BA428-92F8-FBAE-7947-7D06B29E0EBD} = {C8D5274F-AC00-46C7-1F8D-E88E81087A52}
+		{2129077C-2B34-59AA-F78D-99320B1D73A4} = {C8D5274F-AC00-46C7-1F8D-E88E81087A52}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0232998-DB52-4A86-9854-FFD82D9AFE11}

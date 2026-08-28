@@ -17,6 +17,20 @@ internal static class ValidationErrorMessages
     internal static string MaxLength(string propertyName, int max)
         => $"'{propertyName}' must be {max} characters or fewer.";
 
+    internal static string Length(string propertyName, int min, int max)
+    {
+        if (min == max)
+            return $"'{propertyName}' must be exactly {max} in length.";
+
+        if (min <= 0)
+            return $"'{propertyName}' must be at most {max} in length.";
+
+        if (max == int.MaxValue)
+            return $"'{propertyName}' must be at least {min} in length.";
+
+        return $"'{propertyName}' must be between {min} and {max} in length.";
+    }
+
     internal static string Range<T>(string propertyName, T min, T max)
         => $"'{propertyName}' must be between {min} and {max}.";
 

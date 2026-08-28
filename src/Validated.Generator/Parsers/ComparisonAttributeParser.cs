@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Validated.Generator.Constants;
 using Validated.Generator.Diagnostics;
+using Validated.Generator.Enums;
 using Validated.Generator.Extensions;
 using Validated.Generator.Models;
 

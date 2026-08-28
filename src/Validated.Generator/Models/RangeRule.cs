@@ -33,7 +33,7 @@ public sealed class RangeRule : ValidationRule
                 .Replace("{2}", Max.ToString())
             : defaultMessage;
 
-        string errorExpression = $"new global::Validated.ValidationError(nameof({targetProperty}), \"{finalMessage}\", \"Range\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"Range\")";
 
         return (failCondition, errorExpression);
     }
