@@ -2,7 +2,7 @@
 using System.Linq;
 using Validated.Generator.Enums;
 
-namespace Validated.Generator.Extensions;
+namespace Validated.Generator.Utilities;
 
 internal static class SymbolExtensions
 {

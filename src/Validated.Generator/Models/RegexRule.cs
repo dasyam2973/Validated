@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Validated.Generator.Constants;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -34,14 +35,12 @@ public sealed class RegexRule : ValidationRule
     {
         string failCondition = $"({targetProperty} is not null && !{GetFieldName(propertyName)}.IsMatch({targetProperty}))";
 
-        string defaultMessage = ValidationErrorMessages.Regex(propertyName);
-        string finalMessage = !string.IsNullOrWhiteSpace(CustomErrorMessage)
-            ? CustomErrorMessage!
-                .Replace("{PropertyName}", propertyName)
-                .Replace("{Pattern}", Pattern)
-            : defaultMessage;
+        string errorMessage = new MessageFormatter()
+            .With(MessageArguments.PropertyName, propertyName)
+            .With(MessageArguments.Pattern, Pattern)
+            .Format(ValidationErrorMessages.Regex);
 
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"Regex\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"Regex\")";
 
         return (failCondition, errorExpression);
     }

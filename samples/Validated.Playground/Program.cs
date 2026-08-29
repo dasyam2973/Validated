@@ -31,6 +31,10 @@ internal partial class Program
         Console.WriteLine("\n----------------------------------------\n");
 
         RunLengthTest();
+
+        Console.WriteLine("\n----------------------------------------\n");
+
+        RegexTest.Run();
     }
 
     static void RunNotEmptyTest()

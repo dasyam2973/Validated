@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Validated.Generator.Constants;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -25,15 +26,13 @@ public sealed class StringLengthRule : ValidationRule
     {
         string failCondition = $"({targetProperty} is not null && ({targetProperty}.Length < {Min} || {targetProperty}.Length > {Max}))";
 
-        string defaultMessage = ValidationErrorMessages.StringLength(propertyName, Min, Max);
-        string finalMessage = !string.IsNullOrWhiteSpace(CustomErrorMessage)
-            ? CustomErrorMessage!
-                .Replace("{0}", propertyName)
-                .Replace("{1}", Min.ToString())
-                .Replace("{2}", Max.ToString())
-            : defaultMessage;
+        string errorMessage = new MessageFormatter()
+            .With(MessageArguments.PropertyName, propertyName)
+            .With(MessageArguments.Min, Min)
+            .With(MessageArguments.Max, Max)
+            .Format(ValidationErrorMessages.LengthRange);
 
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"StringLength\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"StringLength\")";
 
         return (failCondition, errorExpression);
     }

@@ -4,8 +4,8 @@ using System.Linq;
 using Validated.Generator.Constants;
 using Validated.Generator.Diagnostics;
 using Validated.Generator.Enums;
-using Validated.Generator.Extensions;
 using Validated.Generator.Models;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Parsers;
 
@@ -77,17 +77,17 @@ internal abstract class ComparisonAttributeParser : IAttributeRuleParser
                 return null;
             }
 
-            if (attrFullName == TypeNames.VGreaterThanOrEqualFqn)
+            var compOp = attrFullName switch
             {
-                return new ComparisonRule($"this.{otherPropertyName}", otherPropertyName, ComparisonOperator.GreaterThanOrEqual, customErrorMessage);
-            }
-            else if (attrFullName == TypeNames.VGreaterThanFqn)
+                TypeNames.VGreaterThanOrEqualFqn => ComparisonOperator.GreaterThanOrEqual,
+                TypeNames.VGreaterThanFqn => ComparisonOperator.GreaterThan,
+                TypeNames.VEqualFqn => ComparisonOperator.Equal,
+                _ => ComparisonOperator.None
+            };
+
+            if (compOp != ComparisonOperator.None)
             {
-                return new ComparisonRule($"this.{otherPropertyName}", otherPropertyName, ComparisonOperator.GreaterThan, customErrorMessage);
-            }
-            else if (attrFullName == TypeNames.VEqualFqn)
-            {
-                return new ComparisonRule($"this.{otherPropertyName}", otherPropertyName, ComparisonOperator.Equal, customErrorMessage);
+                return new ComparisonRule(compOp, $"this.{otherPropertyName}", otherPropertyName, customErrorMessage);
             }
         }
 

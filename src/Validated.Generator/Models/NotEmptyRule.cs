@@ -1,6 +1,7 @@
 ﻿using System;
 using Validated.Generator.Constants;
 using Validated.Generator.Enums;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -11,12 +12,9 @@ public sealed class NotEmptyRule : ValidationRule
 
     public NotEmptyRule(ValidationTargetKind targetKind, string? customErrorMessage = null)
     {
-        if (targetKind != ValidationTargetKind.String &&
-            targetKind != ValidationTargetKind.Array &&
-            targetKind != ValidationTargetKind.Collection &&
-            targetKind != ValidationTargetKind.Enumerable)
+        if (targetKind is not (ValidationTargetKind.String or ValidationTargetKind.Array or ValidationTargetKind.Collection or ValidationTargetKind.Enumerable))
         {
-            throw new ArgumentException($"Unsupported TargetKind: {TargetKind}");
+            throw new ArgumentException($"NotEmpty rule does not support {targetKind}.", nameof(targetKind));
         }
 
         TargetKind = targetKind;
@@ -31,7 +29,7 @@ public sealed class NotEmptyRule : ValidationRule
             ValidationTargetKind.Array => $"({targetProperty} is null || {targetProperty}.Length > 0)",
             ValidationTargetKind.Collection => $"({targetProperty} is null || {targetProperty}.Count > 0)",
             ValidationTargetKind.Enumerable => $"({targetProperty} is null || global::System.Linq.Enumerable.Any({targetProperty}))",
-            _ => throw new InvalidOperationException($"Unsupported TargetKind: {TargetKind}")
+            _ => throw new InvalidOperationException($"Unsupported TargetKind for NotEmpty rule: {TargetKind}")
         };
     }
 
@@ -43,15 +41,14 @@ public sealed class NotEmptyRule : ValidationRule
             ValidationTargetKind.Array => $"({targetProperty} is not null && {targetProperty}.Length == 0)",
             ValidationTargetKind.Collection => $"({targetProperty} is not null && {targetProperty}.Count == 0)",
             ValidationTargetKind.Enumerable => $"({targetProperty} is not null && !global::System.Linq.Enumerable.Any({targetProperty}))",
-            _ => throw new InvalidOperationException($"Unsupported TargetKind: {TargetKind}")
+            _ => throw new InvalidOperationException($"Unsupported TargetKind for NotEmpty rule: {TargetKind}")
         };
 
-        string defaultMessage = ValidationErrorMessages.NotEmpty(propertyName);
-        string finalMessage = !string.IsNullOrWhiteSpace(CustomErrorMessage)
-            ? CustomErrorMessage!.Replace("{PropertyName}", propertyName)
-            : defaultMessage;
+        string errorMessage = new MessageFormatter()
+            .With(MessageArguments.PropertyName, propertyName)
+            .Format(ValidationErrorMessages.NotEmpty);
 
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"NotEmpty\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"NotEmpty\")";
 
         return (failCondition, errorExpression);
     }

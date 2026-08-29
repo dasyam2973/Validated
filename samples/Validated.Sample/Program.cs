@@ -2,8 +2,27 @@
 
 namespace Validated.Sample;
 
-internal class Program
+partial class Program
 {
+    [Validatable]
+    public partial record UserRegistrationRequest(
+        [property: VLength(3, 20)]
+        string Username,
+
+        [property: VRange(18, 100)]
+        int Age,
+
+        string Password,
+
+        [property: VEqual("Password")]
+        string ConfirmPassword,
+
+        DateTime StartDate,
+
+        [property: VGreaterThanOrEqual("StartDate")]
+        DateTime EndDate
+    );
+
     static void Main()
     {
         Console.WriteLine("=== Source Generator Validation Sample ===\n");
@@ -41,22 +60,3 @@ internal class Program
         }
     }
 }
-
-[Validatable]
-public partial record UserRegistrationRequest(
-    [property: VStringLength(3, 20)]
-    string Username,
-
-    [property: VRange(18, 100)]
-    int Age,
-
-    string Password,
-
-    [property: VEqual("Password")]
-    string ConfirmPassword,
-
-    DateTime StartDate,
-
-    [property: VGreaterThanOrEqual("StartDate")]
-    DateTime EndDate
-);

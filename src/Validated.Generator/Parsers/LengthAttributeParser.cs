@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Validated.Generator.Constants;
 using Validated.Generator.Diagnostics;
 using Validated.Generator.Enums;
-using Validated.Generator.Extensions;
 using Validated.Generator.Models;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Parsers;
 

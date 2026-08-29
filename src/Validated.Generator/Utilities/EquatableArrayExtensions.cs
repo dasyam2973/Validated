@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Validated.Generator.Extensions;
+namespace Validated.Generator.Utilities;
 
 internal static class EquatableArrayExtensions
 {

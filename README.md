@@ -8,15 +8,16 @@
 using Validated;
 using Validated.Annotations;
 
-[Validatable]
-public partial record UserRegistrationRequest(string Username, int Age, DateTime StartDate, DateTime EndDate)
-{
-    [property: VStringLength(3, 20)] public string Username { get; } = Username;
-    [property: VRange(18, 100)] public int Age { get; } = Age;
+    [Validatable]
+public partial record UserRegistrationRequest(
+    [property: VLength(3, 20)] string Username,
 
-    public DateTime StartDate { get; } = StartDate;
-    [property: VGreaterThanOrEqual(nameof(StartDate))] public DateTime EndDate { get; } = EndDate;
-};
+    [property: VRange(18, 100)] int Age,
+
+    DateTime StartDate,
+
+    [property: VGreaterThanOrEqual("StartDate")] DateTime EndDate
+);
 
 UserRegistrationRequest request = new("dev_user", 25, DateTime.Now, DateTime.Now.AddDays(1));
 ValidationResult result = request.Validate();

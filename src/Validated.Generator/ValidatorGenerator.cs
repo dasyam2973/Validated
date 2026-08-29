@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading;
 using Validated.Generator.Constants;
 using Validated.Generator.Emitters;
-using Validated.Generator.Extensions;
 using Validated.Generator.Models;
 using Validated.Generator.Parsers;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Validated.Generator.Models;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Emitters;
 

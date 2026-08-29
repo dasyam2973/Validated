@@ -1,4 +1,5 @@
 ﻿using Validated.Generator.Constants;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -20,13 +21,11 @@ public sealed class NotNullRule : ValidationRule
     {
         string failCondition = $"({targetProperty} is null)";
 
-        string defaultMessage = ValidationErrorMessages.NotNull(propertyName);
-        string finalMessage = !string.IsNullOrWhiteSpace(CustomErrorMessage)
-            ? CustomErrorMessage!
-                .Replace("{0}", propertyName)
-            : defaultMessage;
+        string errorMessage = new MessageFormatter()
+            .With(MessageArguments.PropertyName, propertyName)
+            .Format(ValidationErrorMessages.NotNull);
 
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"NotNull\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"NotNull\")";
 
         return (failCondition, errorExpression);
     }

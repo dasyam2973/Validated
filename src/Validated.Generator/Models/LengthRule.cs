@@ -1,6 +1,7 @@
 ﻿using System;
 using Validated.Generator.Constants;
 using Validated.Generator.Enums;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -15,7 +16,7 @@ public sealed class LengthRule : ValidationRule
     {
         if (targetKind is not (ValidationTargetKind.String or ValidationTargetKind.Array or ValidationTargetKind.Collection))
         {
-            throw new ArgumentException($"Length validation rule does not support {targetKind}.", nameof(targetKind));
+            throw new ArgumentException($"Length rule does not support {targetKind}.", nameof(targetKind));
         }
 
         TargetKind = targetKind;
@@ -45,15 +46,13 @@ public sealed class LengthRule : ValidationRule
 
         string failCondition = $"({targetProperty} is not null && ({lengthAccessor} < {Min} || {lengthAccessor} > {Max}))";
 
-        string defaultMessage = ValidationErrorMessages.Length(propertyName, Min, Max);
-        string finalMessage = !string.IsNullOrWhiteSpace(CustomErrorMessage)
-            ? CustomErrorMessage!
-                .Replace("{PropertyName}", propertyName)
-                .Replace("{MinLength}", Min.ToString())
-                .Replace("{MaxLength}", Max.ToString())
-            : defaultMessage;
+        string errorMessage = new MessageFormatter()
+            .With(MessageArguments.PropertyName, propertyName)
+            .With(MessageArguments.Min, Min)
+            .With(MessageArguments.Max, Max)
+            .Format(ValidationErrorMessages.LengthRange);
 
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{finalMessage}\", \"Length\")";
+        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"Length\")";
 
         return (failCondition, errorExpression);
     }

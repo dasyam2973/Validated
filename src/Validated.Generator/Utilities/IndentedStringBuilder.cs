@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Validated.Generator;
+namespace Validated.Generator.Utilities;
 
 internal class IndentedStringBuilder
 {
