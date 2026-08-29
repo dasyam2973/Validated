@@ -5,39 +5,29 @@
 유효성 검사가 필요한 `partial` 구조체, 클래스 및 레코드에 `Validatable` 어트리뷰트를 부여하면 소스 생성기가 `Validate()` 및 `TryValidate()` 등의 메서드를 자동으로 내보냅니다.
 
 ```cs
-using Validated;
 using Validated.Annotations;
 
-    [Validatable]
-public partial record UserRegistrationRequest(
+var user = new UserRegistration("a", 15);
+var result = user.Validate();
+
+Console.WriteLine($"IsValid: {result.IsValid}"); // -> False
+
+foreach (var error in result.Errors)
+{
+    Console.WriteLine($"- [{error.PropertyName}] {error.Message}");
+}
+
+[Validatable]
+public partial record UserRegistration(
     [property: VLength(3, 20)] string Username,
-
-    [property: VRange(18, 100)] int Age,
-
-    DateTime StartDate,
-
-    [property: VGreaterThanOrEqual("StartDate")] DateTime EndDate
+    [property: VRange(18, 100)] int Age
 );
+```
 
-UserRegistrationRequest request = new("dev_user", 25, DateTime.Now, DateTime.Now.AddDays(1));
-ValidationResult result = request.Validate();
+오류 목록이 필요하지 않다면 `IsValid` 속성으로 할당 없이 유효성 검사 성공 여부만 가져올 수 있습니다.
 
-if (!result.IsValid)
-{
-    foreach (var error in result.Errors)
-    {
-        Console.WriteLine($"[{error.PropertyName}] {error.Message}");
-    }
-}
+```cs
+var user = new UserRegistration("john", 20);
 
-if (request.TryValidate(out var validationResult))
-{
-    // 성공 시 로직...
-}
-
-// 오류 목록이 필요하지 않다면 IsValid 이용
-if (request.IsValid)
-{
-    // 성공 시 로직...
-}
+Console.WriteLine($"IsValid: {user.IsValid}"); // -> True
 ```

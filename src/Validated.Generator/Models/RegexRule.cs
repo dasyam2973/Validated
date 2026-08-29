@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Validated.Generator.Constants;
-using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -14,6 +13,8 @@ public sealed class RegexRule : ValidationRule
         Pattern = pattern;
         CustomErrorMessage = customErrorMessage;
     }
+
+    private static string GetFieldName(string propertyName) => $"_regex_{propertyName}";
 
     public override IEnumerable<string> EmitStaticDeclarations(string propertyName)
     {
@@ -29,18 +30,14 @@ public sealed class RegexRule : ValidationRule
         return $"({targetProperty} is null || {GetFieldName(propertyName)}.IsMatch({targetProperty}))";
     }
 
-    private static string GetFieldName(string propertyName) => $"_regex_{propertyName}";
-
     public override (string FailCondition, string ErrorExpression) BuildErrorCheck(string targetProperty, string propertyName)
     {
         string failCondition = $"({targetProperty} is not null && !{GetFieldName(propertyName)}.IsMatch({targetProperty}))";
 
-        string errorMessage = new MessageFormatter()
-            .With(MessageArguments.PropertyName, propertyName)
-            .With(MessageArguments.Pattern, Pattern)
-            .Format(ValidationErrorMessages.Regex);
-
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"Regex\")";
+        string errorExpression =
+            $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.Format(\"{propertyName}\", {TypeNames.ValidationErrorMessagesFqn}.Regex), " +
+            $"\"Regex\")";
 
         return (failCondition, errorExpression);
     }

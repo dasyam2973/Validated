@@ -9,7 +9,7 @@ using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Parsers;
 
-internal abstract class ComparisonAttributeParser : IAttributeRuleParser
+internal abstract partial class PropertyComparisonAttributeParser : IAttributeRuleParser
 {
     public abstract string TargetAttributeFullName { get; }
 
@@ -79,15 +79,18 @@ internal abstract class ComparisonAttributeParser : IAttributeRuleParser
 
             var compOp = attrFullName switch
             {
-                TypeNames.VGreaterThanOrEqualFqn => ComparisonOperator.GreaterThanOrEqual,
-                TypeNames.VGreaterThanFqn => ComparisonOperator.GreaterThan,
-                TypeNames.VEqualFqn => ComparisonOperator.Equal,
+                TypeNames.VGreaterThanPropertyFqn => ComparisonOperator.GreaterThan,
+                TypeNames.VGreaterThanOrEqualPropertyFqn => ComparisonOperator.GreaterThanOrEqual,
+                TypeNames.VLessThanPropertyFqn => ComparisonOperator.LessThan,
+                TypeNames.VLessThanOrEqualPropertyFqn => ComparisonOperator.LessThanOrEqual,
+                TypeNames.VEqualPropertyFqn => ComparisonOperator.Equal,
+                TypeNames.VNotEqualPropertyFqn => ComparisonOperator.NotEqual,
                 _ => ComparisonOperator.None
             };
 
             if (compOp != ComparisonOperator.None)
             {
-                return new ComparisonRule(compOp, $"this.{otherPropertyName}", otherPropertyName, customErrorMessage);
+                return new PropertyComparisonRule(compOp, $"this.{otherPropertyName}", otherPropertyName, customErrorMessage);
             }
         }
 

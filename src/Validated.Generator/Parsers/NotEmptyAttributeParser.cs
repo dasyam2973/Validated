@@ -14,10 +14,7 @@ internal class NotEmptyAttributeParser : IAttributeRuleParser
     public bool IsApplicableTo(ITypeSymbol typeSymbol, Compilation compilation)
     {
         var targetKind = typeSymbol.GetValidationTargetKind(compilation);
-        return targetKind == ValidationTargetKind.String ||
-               targetKind == ValidationTargetKind.Array ||
-               targetKind == ValidationTargetKind.Collection ||
-               targetKind == ValidationTargetKind.Enumerable;
+        return targetKind is ValidationTargetKind.String or ValidationTargetKind.Array or ValidationTargetKind.Collection or ValidationTargetKind.Enumerable;
     }
 
     public ValidationRule? Parse(

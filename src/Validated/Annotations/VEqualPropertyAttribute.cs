@@ -1,10 +1,10 @@
 ﻿namespace Validated.Annotations;
 
-public sealed class VEqualAttribute : ValidationRuleAttribute
+public sealed class VEqualPropertyAttribute : ValidationRuleAttribute
 {
     public string OtherPropertyName { get; }
 
-    public VEqualAttribute(string otherPropertyName)
+    public VEqualPropertyAttribute(string otherPropertyName)
     {
         OtherPropertyName = otherPropertyName;
     }

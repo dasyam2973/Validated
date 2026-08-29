@@ -1,7 +1,6 @@
 ﻿using System;
 using Validated.Generator.Constants;
 using Validated.Generator.Enums;
-using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -44,11 +43,10 @@ public sealed class NotEmptyRule : ValidationRule
             _ => throw new InvalidOperationException($"Unsupported TargetKind for NotEmpty rule: {TargetKind}")
         };
 
-        string errorMessage = new MessageFormatter()
-            .With(MessageArguments.PropertyName, propertyName)
-            .Format(ValidationErrorMessages.NotEmpty);
-
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"NotEmpty\")";
+        string errorExpression =
+            $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.Format(\"{propertyName}\", {TypeNames.ValidationErrorMessagesFqn}.NotEmpty), " +
+            $"\"NotEmpty\")";
 
         return (failCondition, errorExpression);
     }

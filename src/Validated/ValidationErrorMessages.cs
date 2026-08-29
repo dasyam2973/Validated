@@ -1,6 +1,6 @@
-﻿using Args = Validated.Generator.Constants.MessageArguments;
+﻿using Args = Validated.MessageArguments;
 
-namespace Validated.Generator.Constants;
+namespace Validated;
 
 public static class ValidationErrorMessages
 {
@@ -17,6 +17,8 @@ public static class ValidationErrorMessages
     public const string GreaterThanOrEqual = $"'{{{Args.PropertyName}}}' must be greater than or equal to {{{Args.Value}}}.";
     public const string LessThan = $"'{{{Args.PropertyName}}}' must be less than {{{Args.Value}}}.";
     public const string LessThanOrEqual = $"'{{{Args.PropertyName}}}' must be less than or equal to {{{Args.Value}}}.";
+    public const string Equal = $"'{{{Args.PropertyName}}}' must be equal to '{{{Args.Value}}}'.";
+    public const string NotEqual = $"'{{{Args.PropertyName}}}' must not be equal to '{{{Args.Value}}}'.";
 
     public const string GreaterThanProperty = $"'{{{Args.PropertyName}}}' must be greater than '{{{Args.OtherPropertyName}}}'.";
     public const string GreaterThanOrEqualProperty = $"'{{{Args.PropertyName}}}' must be greater than or equal to '{{{Args.OtherPropertyName}}}'.";

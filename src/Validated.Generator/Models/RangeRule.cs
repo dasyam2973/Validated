@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Validated.Generator.Constants;
-using Validated.Generator.Utilities;
+﻿using Validated.Generator.Constants;
 
 namespace Validated.Generator.Models;
 
@@ -26,13 +24,10 @@ public sealed class RangeRule : ValidationRule
     {
         string failCondition = $"({targetProperty} != null && ({targetProperty} < {Min} || {targetProperty} > {Max}))";
 
-        string errorMessage = new MessageFormatter()
-            .With(MessageArguments.PropertyName, propertyName)
-            .With(MessageArguments.Min, Min)
-            .With(MessageArguments.Max, Max)
-            .Format(ValidationErrorMessages.Range);
-
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"Range\")";
+        string errorExpression =
+            $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.FormatRange(\"{propertyName}\", {Min}, {Max}, {TypeNames.ValidationErrorMessagesFqn}.Range), " +
+            $"\"Range\")";
 
         return (failCondition, errorExpression);
     }

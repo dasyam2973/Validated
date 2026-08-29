@@ -5,14 +5,14 @@ using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
-public sealed class ComparisonRule : ValidationRule
+public sealed class PropertyComparisonRule : ValidationRule
 {
     public ComparisonOperator Operator { get; }
     public string OtherProperty { get; }
     public string OtherPropertyName { get; }
     public string? CustomErrorMessage { get; }
 
-    public ComparisonRule(ComparisonOperator op, string otherProperty, string otherPropertyName, string? customErrorMessage = null)
+    public PropertyComparisonRule(ComparisonOperator op, string otherProperty, string otherPropertyName, string? customErrorMessage = null)
     {
         Operator = op;
         OtherProperty = otherProperty;
@@ -29,12 +29,12 @@ public sealed class ComparisonRule : ValidationRule
     {
         return op switch
         {
-            ComparisonOperator.GreaterThan => ValidationErrorMessages.GreaterThanProperty,
-            ComparisonOperator.GreaterThanOrEqual => ValidationErrorMessages.GreaterThanOrEqualProperty,
-            ComparisonOperator.LessThan => ValidationErrorMessages.LessThanProperty,
-            ComparisonOperator.LessThanOrEqual => ValidationErrorMessages.LessThanOrEqualProperty,
-            ComparisonOperator.Equal => ValidationErrorMessages.EqualProperty,
-            ComparisonOperator.NotEqual => ValidationErrorMessages.NotEqualProperty,
+            ComparisonOperator.GreaterThan or
+            ComparisonOperator.GreaterThanOrEqual or
+            ComparisonOperator.LessThan or
+            ComparisonOperator.LessThanOrEqual or
+            ComparisonOperator.Equal or
+            ComparisonOperator.NotEqual=> $"{TypeNames.ValidationErrorMessagesFqn}.{op}Property",
             _ => throw new InvalidOperationException($"Unsupported ComparisonOperator for Comparison rule: {op}")
         };
     }
@@ -43,19 +43,17 @@ public sealed class ComparisonRule : ValidationRule
     {
         string failCondition = $"(!global::Validated.ValidationHelpers.Compare({targetProperty}, {OtherProperty}, global::Validated.ComparisonOperator.{Operator}))";
 
-        string errorMessage = new MessageFormatter()
-            .With(MessageArguments.PropertyName, propertyName)
-            .With(MessageArguments.OtherPropertyName, OtherPropertyName)
-            .Format(GetComparisonErrorMessage(Operator));
-
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"Comparsion\")";
+        string errorExpression =
+            $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.FormatPropertyComparison(\"{propertyName}\", \"{OtherPropertyName}\", {GetComparisonErrorMessage(Operator)}), " +
+            $"\"PropertyComparison\")";
 
         return (failCondition, errorExpression);
     }
 
     public override bool Equals(ValidationRule other)
     {
-        return other is ComparisonRule otherRule &&
+        return other is PropertyComparisonRule otherRule &&
                otherRule.Operator == Operator &&
                string.Equals(otherRule.OtherProperty, OtherProperty) &&
                string.Equals(otherRule.OtherPropertyName, OtherPropertyName) &&

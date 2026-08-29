@@ -13,14 +13,16 @@ public static class ValidationRuleParser
         new NotNullAttributeParser(),
         new NotEmptyAttributeParser(),
         new RangeAttributeParser(),
-        new StringLengthAttributeParser(),
         new LengthAttributeParser(),
 
         new RegexAttributeParser(),
 
-        new GreaterThanOrEqualAttributeParser(),
-        new GreaterThanAttributeParser(),
-        new EqualAttributeParser()
+        new ValueComparisonAttributeParser.GreaterThan(),
+
+        new PropertyComparisonAttributeParser.GreaterThan(),
+        new PropertyComparisonAttributeParser.GreaterThanOrEqual(),
+        new PropertyComparisonAttributeParser.LessThan(),
+        new PropertyComparisonAttributeParser.Equal()
     }.ToDictionary(p => p.TargetAttributeFullName, p => p);
 
     public static ValidationRule? ParseAttribute(
@@ -33,8 +35,10 @@ public static class ValidationRuleParser
         var attrClass = attribute.AttributeClass;
         if (attrClass is null) return null;
 
-        string attrFullName = attrClass.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                                       .Replace("global::", "");
+        string rawFullName = attrClass.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                                      .Replace("global::", "");
+
+        string cleanFullName = CutGenericSuffix(rawFullName);
 
         var location = attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation() ?? Location.None;
 
@@ -48,14 +52,14 @@ public static class ValidationRuleParser
             }
         }
 
-        if (Parsers.TryGetValue(attrFullName, out var parser))
+        if (Parsers.TryGetValue(cleanFullName, out var parser))
         {
             if (!parser.IsApplicableTo(propertyType, compilation))
             {
                 diagnostics.Add(Diagnostic.Create(
                     DiagnosticDescriptors.InvalidAttributeTarget,
                     location,
-                    attrFullName, propertyType.ToDisplayString()
+                    cleanFullName, propertyType.ToDisplayString()
                 ));
                 return null;
             }
@@ -64,5 +68,11 @@ public static class ValidationRuleParser
         }
 
         return null;
+    }
+
+    private static string CutGenericSuffix(string fullName)
+    {
+        int genericIdx = fullName.IndexOf('<');
+        return genericIdx >= 0 ? fullName.Substring(0, genericIdx) : fullName;
     }
 }

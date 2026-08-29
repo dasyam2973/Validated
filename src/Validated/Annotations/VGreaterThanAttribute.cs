@@ -1,11 +1,11 @@
 ﻿namespace Validated.Annotations;
 
-public sealed class VGreaterThanAttribute : ValidationRuleAttribute
+public sealed class VGreaterThanAttribute<T> : ValidationRuleAttribute
 {
-    public string OtherPropertyName { get; }
+    public T Value { get; }
 
-    public VGreaterThanAttribute(string otherPropertyName)
+    public VGreaterThanAttribute(T value)
     {
-        OtherPropertyName = otherPropertyName;
+        Value = value;
     }
 }

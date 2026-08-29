@@ -24,7 +24,7 @@ internal static class ValidationCodeEmitter
             }
         }
 
-        using (builder.Block($"namespace {typeModel.Namespace}"))
+        using (string.IsNullOrEmpty(typeModel.Namespace) ? null : builder.Block($"namespace {typeModel.Namespace}"))
         {
             List<IDisposable> parentBlocks = new();
             try
@@ -70,6 +70,7 @@ internal static class ValidationCodeEmitter
                     using (builder.Block("public global::Validated.ValidationResult Validate()"))
                     {
                         builder.Line("var errors = new global::System.Collections.Generic.List<global::Validated.ValidationError>();");
+                        builder.Line();
 
                         foreach (var property in typeModel.Properties)
                         {

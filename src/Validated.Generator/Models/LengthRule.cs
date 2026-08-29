@@ -1,7 +1,6 @@
 ﻿using System;
 using Validated.Generator.Constants;
 using Validated.Generator.Enums;
-using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -46,13 +45,10 @@ public sealed class LengthRule : ValidationRule
 
         string failCondition = $"({targetProperty} is not null && ({lengthAccessor} < {Min} || {lengthAccessor} > {Max}))";
 
-        string errorMessage = new MessageFormatter()
-            .With(MessageArguments.PropertyName, propertyName)
-            .With(MessageArguments.Min, Min)
-            .With(MessageArguments.Max, Max)
-            .Format(ValidationErrorMessages.LengthRange);
-
-        string errorExpression = $"new global::Validated.ValidationError(\"{propertyName}\", \"{errorMessage}\", \"Length\")";
+        string errorExpression =
+            $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.FormatLength(\"{propertyName}\", {Min}, {Max}, {TypeNames.ValidationErrorMessagesFqn}.LengthRange), " +
+            $"\"Length\")";
 
         return (failCondition, errorExpression);
     }

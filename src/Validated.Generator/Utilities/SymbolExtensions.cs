@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using System.Collections.Immutable;
 using System.Linq;
 using Validated.Generator.Enums;
 
@@ -18,6 +19,9 @@ internal static class SymbolExtensions
 
         if (!SymbolEqualityComparer.Default.Equals(unwrapA, unwrapB))
             return false;
+
+        if (unwrapA.TypeKind == TypeKind.Enum)
+            return true;
 
         INamedTypeSymbol? genericIComparableSymbol = compilation.GetTypeByMetadataName("System.IComparable`1");
 
@@ -101,5 +105,20 @@ internal static class SymbolExtensions
             return ValidationTargetKind.Enumerable;
 
         return ValidationTargetKind.None;
+    }
+
+    public static INamedTypeSymbol? GetGenericAttributeTypeArgument(AttributeData attributeData)
+    {
+        if (attributeData.AttributeClass is { IsGenericType: true } attributeClass)
+        {
+            ImmutableArray<ITypeSymbol> typeArguments = attributeClass.TypeArguments;
+
+            if (typeArguments.Length > 0 && typeArguments[0] is INamedTypeSymbol targetType)
+            {
+                return targetType;
+            }
+        }
+
+        return null;
     }
 }

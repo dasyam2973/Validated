@@ -10,12 +10,12 @@ public partial class InvalidUsageSample
     public int Age { get; set; }
 
     // [VD002]
-    [VGreaterThanOrEqual("NonExistingProperty")]
+    [VGreaterThanOrEqualProperty("NonExistingProperty")]
     public DateTime EndDate { get; set; }
 
     // [VD003]
     public int MinValue { get; set; }
 
-    [VGreaterThan(nameof(MinValue))]
+    [VGreaterThanProperty(nameof(MinValue))]
     public string Description { get; set; } = string.Empty;
 }

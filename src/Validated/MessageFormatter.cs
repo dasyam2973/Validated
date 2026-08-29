@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Validated.Generator.Utilities;
+namespace Validated;
 
 public class MessageFormatter
 {
@@ -10,7 +10,7 @@ public class MessageFormatter
 
     public MessageFormatter With(string name, object? value)
     {
-        _placeholders[name] = value?.ToString() ?? string.Empty;
+        _placeholders[name] = FormatSmart(value);
         return this;
     }
 
@@ -20,11 +20,20 @@ public class MessageFormatter
         return this;
     }
 
-    public MessageFormatter With(string name, string value)
+    public MessageFormatter WithRaw(string name, string? rawValue)
     {
-        _placeholders[name] = value;
+        _placeholders[name] = rawValue ?? string.Empty;
         return this;
     }
+
+    private static string FormatSmart(object? value) => value switch
+    {
+        null => "null",
+        Enum e => $"{e.GetType().Name}.{e}",
+        string s => $"'{s}'",
+        char c => $"'{c}'",
+        _ => value.ToString() ?? string.Empty
+    };
 
     public string Format(string? input)
     {
@@ -45,7 +54,7 @@ public class MessageFormatter
         {
             if (input[i] == '{')
             {
-                int closeIndex = input.Slice(i).IndexOf('}');
+                int closeIndex = input[i..].IndexOf('}');
 
                 if (closeIndex > 1)
                 {
