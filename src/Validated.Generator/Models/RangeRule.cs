@@ -24,9 +24,11 @@ public sealed class RangeRule : ValidationRule
     {
         string failCondition = $"({targetProperty} != null && ({targetProperty} < {Min} || {targetProperty} > {Max}))";
 
+        string errorMessageTemplate = GetErrorMessageExpression($"{TypeNames.ValidationErrorMessagesFqn}.Range", CustomErrorMessage!);
+
         string errorExpression =
             $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
-            $"{TypeNames.ValidationMessageHelpersFqn}.FormatRange(\"{propertyName}\", {Min}, {Max}, {TypeNames.ValidationErrorMessagesFqn}.Range), " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.FormatRange(\"{propertyName}\", {Min}, {Max}, {errorMessageTemplate}), " +
             $"\"Range\")";
 
         return (failCondition, errorExpression);

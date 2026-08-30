@@ -24,15 +24,7 @@ internal class NotEmptyAttributeParser : IAttributeRuleParser
         Compilation compilation,
         List<Diagnostic> diagnostics)
     {
-        string? customErrorMessage = null;
-        foreach (var namedArg in attribute.NamedArguments)
-        {
-            if (namedArg.Key == "ErrorMessage" && namedArg.Value.Value is string msg)
-            {
-                customErrorMessage = msg;
-                break;
-            }
-        }
+        string? customErrorMessage = attribute.GetCustomErrorMessage();
 
         var targetKind = propertyType.GetValidationTargetKind(compilation);
         return new NotEmptyRule(targetKind, customErrorMessage);

@@ -34,9 +34,11 @@ public sealed class RegexRule : ValidationRule
     {
         string failCondition = $"({targetProperty} is not null && !{GetFieldName(propertyName)}.IsMatch({targetProperty}))";
 
+        string errorMessageTemplate = GetErrorMessageExpression($"{TypeNames.ValidationErrorMessagesFqn}.Regex", CustomErrorMessage!);
+
         string errorExpression =
             $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
-            $"{TypeNames.ValidationMessageHelpersFqn}.Format(\"{propertyName}\", {TypeNames.ValidationErrorMessagesFqn}.Regex), " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.Format(\"{propertyName}\", {errorMessageTemplate}), " +
             $"\"Regex\")";
 
         return (failCondition, errorExpression);

@@ -106,19 +106,4 @@ internal static class SymbolExtensions
 
         return ValidationTargetKind.None;
     }
-
-    public static INamedTypeSymbol? GetGenericAttributeTypeArgument(AttributeData attributeData)
-    {
-        if (attributeData.AttributeClass is { IsGenericType: true } attributeClass)
-        {
-            ImmutableArray<ITypeSymbol> typeArguments = attributeClass.TypeArguments;
-
-            if (typeArguments.Length > 0 && typeArguments[0] is INamedTypeSymbol targetType)
-            {
-                return targetType;
-            }
-        }
-
-        return null;
-    }
 }

@@ -43,9 +43,11 @@ public sealed class PropertyComparisonRule : ValidationRule
     {
         string failCondition = $"(!global::Validated.ValidationHelpers.Compare({targetProperty}, {OtherProperty}, global::Validated.ComparisonOperator.{Operator}))";
 
+        string errorMessageTemplate = GetErrorMessageExpression(GetComparisonErrorMessage(Operator), CustomErrorMessage!);
+
         string errorExpression =
             $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
-            $"{TypeNames.ValidationMessageHelpersFqn}.FormatPropertyComparison(\"{propertyName}\", \"{OtherPropertyName}\", {GetComparisonErrorMessage(Operator)}), " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.FormatPropertyComparison(\"{propertyName}\", \"{OtherPropertyName}\", {errorMessageTemplate}), " +
             $"\"PropertyComparison\")";
 
         return (failCondition, errorExpression);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,4 +26,9 @@ public abstract class ValidationRule : IEquatable<ValidationRule>
     public abstract (string FailCondition, string ErrorExpression) BuildErrorCheck(string targetProperty, string propertyName);
 
     public abstract bool Equals(ValidationRule other);
+
+    protected static string GetErrorMessageExpression(string defaultTemplateFqn, string? customErrorMessage)
+    {
+        return string.IsNullOrEmpty(customErrorMessage) ? defaultTemplateFqn : SymbolDisplay.FormatLiteral(customErrorMessage!, quote: true);
+    }
 }

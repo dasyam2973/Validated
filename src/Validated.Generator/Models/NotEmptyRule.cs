@@ -43,9 +43,11 @@ public sealed class NotEmptyRule : ValidationRule
             _ => throw new InvalidOperationException($"Unsupported TargetKind for NotEmpty rule: {TargetKind}")
         };
 
+        string errorMessageTemplate = GetErrorMessageExpression($"{TypeNames.ValidationErrorMessagesFqn}.NotEmpty", CustomErrorMessage!);
+
         string errorExpression =
             $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
-            $"{TypeNames.ValidationMessageHelpersFqn}.Format(\"{propertyName}\", {TypeNames.ValidationErrorMessagesFqn}.NotEmpty), " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.Format(\"{propertyName}\", {errorMessageTemplate}), " +
             $"\"NotEmpty\")";
 
         return (failCondition, errorExpression);

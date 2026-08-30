@@ -35,16 +35,6 @@ internal abstract partial class ValueComparisonAttributeParser : IAttributeRuleP
 
         var location = attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation() ?? Location.None;
 
-        string? customErrorMessage = null;
-        foreach (var namedArg in attribute.NamedArguments)
-        {
-            if (namedArg.Key == "ErrorMessage" && namedArg.Value.Value is string msg)
-            {
-                customErrorMessage = msg;
-                break;
-            }
-        }
-
         if (attribute.ConstructorArguments.Length == 1)
         {
             TypedConstant typedConstant = attribute.ConstructorArguments[0];
@@ -72,6 +62,8 @@ internal abstract partial class ValueComparisonAttributeParser : IAttributeRuleP
                 TypeNames.VNotEqualFqn => ComparisonOperator.NotEqual,
                 _ => ComparisonOperator.None
             };
+
+            string? customErrorMessage = attribute.GetCustomErrorMessage();
 
             if (compOp != ComparisonOperator.None)
             {

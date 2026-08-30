@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Validated.Generator.Constants;
 using Validated.Generator.Diagnostics;
 using Validated.Generator.Models;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Parsers;
 
@@ -33,16 +34,6 @@ internal class RangeAttributeParser : IAttributeRuleParser
     {
         var location = attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation() ?? Location.None;
 
-        string? customErrorMessage = null;
-        foreach (var namedArg in attribute.NamedArguments)
-        {
-            if (namedArg.Key == "ErrorMessage" && namedArg.Value.Value is string msg)
-            {
-                customErrorMessage = msg;
-                break;
-            }
-        }
-
         if (attribute.ConstructorArguments.Length == 2 &&
             double.TryParse(attribute.ConstructorArguments[0].Value?.ToString(), out var min) &&
             double.TryParse(attribute.ConstructorArguments[1].Value?.ToString(), out var max))
@@ -57,6 +48,8 @@ internal class RangeAttributeParser : IAttributeRuleParser
                 ));
                 return null;
             }
+
+            string? customErrorMessage = attribute.GetCustomErrorMessage();
 
             return new RangeRule(min, max, customErrorMessage);
         }

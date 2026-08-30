@@ -33,16 +33,6 @@ internal abstract partial class PropertyComparisonAttributeParser : IAttributeRu
 
         var location = attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation() ?? Location.None;
 
-        string? customErrorMessage = null;
-        foreach (var namedArg in attribute.NamedArguments)
-        {
-            if (namedArg.Key == "ErrorMessage" && namedArg.Value.Value is string msg)
-            {
-                customErrorMessage = msg;
-                break;
-            }
-        }
-
         if (attribute.ConstructorArguments.Length == 1 &&
             attribute.ConstructorArguments[0].Value is string otherPropertyName)
         {
@@ -60,7 +50,7 @@ internal abstract partial class PropertyComparisonAttributeParser : IAttributeRu
             {
                 diagnostics.Add(Diagnostic.Create(
                     DiagnosticDescriptors.MemberNotFound,
-                    attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation(),
+                    location,
                     otherPropertyName, containingType.Name
                 ));
                 return null;
@@ -70,7 +60,7 @@ internal abstract partial class PropertyComparisonAttributeParser : IAttributeRu
             {
                 diagnostics.Add(Diagnostic.Create(
                     DiagnosticDescriptors.IncompatibleCompareTypes,
-                    attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation(),
+                    location,
                     propertyType.ToDisplayString(), targetProperty.Name,
                     otherType.ToDisplayString(), otherPropertyName
                 ));
@@ -87,6 +77,8 @@ internal abstract partial class PropertyComparisonAttributeParser : IAttributeRu
                 TypeNames.VNotEqualPropertyFqn => ComparisonOperator.NotEqual,
                 _ => ComparisonOperator.None
             };
+
+            string? customErrorMessage = attribute.GetCustomErrorMessage();
 
             if (compOp != ComparisonOperator.None)
             {

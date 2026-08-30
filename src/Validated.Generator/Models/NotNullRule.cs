@@ -20,9 +20,11 @@ public sealed class NotNullRule : ValidationRule
     {
         string failCondition = $"({targetProperty} is null)";
 
+        string errorMessageTemplate = GetErrorMessageExpression($"{TypeNames.ValidationErrorMessagesFqn}.NotNull", CustomErrorMessage!);
+
         string errorExpression =
             $"new {TypeNames.ValidationErrorFqn}(\"{propertyName}\", " +
-            $"{TypeNames.ValidationMessageHelpersFqn}.Format(\"{propertyName}\", {TypeNames.ValidationErrorMessagesFqn}.NotNull), " +
+            $"{TypeNames.ValidationMessageHelpersFqn}.Format(\"{propertyName}\", {errorMessageTemplate}), " +
             $"\"NotNull\")";
 
         return (failCondition, errorExpression);

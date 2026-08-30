@@ -18,4 +18,8 @@ public partial class InvalidUsageSample
 
     [VGreaterThanProperty(nameof(MinValue))]
     public string Description { get; set; } = string.Empty;
+
+    // [VD004]
+    [VRegex(@"^.+$")]
+    public int NotInt { get; set; }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Validated.Generator.Constants;
 using Validated.Generator.Models;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Parsers;
 
@@ -21,17 +22,7 @@ internal class NotNullAttributeParser : IAttributeRuleParser
         Compilation compilation,
         List<Diagnostic> diagnostics)
     {
-        var location = attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation() ?? Location.None;
-
-        string? customErrorMessage = null;
-        foreach (var namedArg in attribute.NamedArguments)
-        {
-            if (namedArg.Key == "ErrorMessage" && namedArg.Value.Value is string msg)
-            {
-                customErrorMessage = msg;
-                break;
-            }
-        }
+        string? customErrorMessage = attribute.GetCustomErrorMessage();
 
         return new NotNullRule(customErrorMessage);
     }
