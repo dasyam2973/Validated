@@ -40,7 +40,7 @@ public sealed class LengthRule : ValidationRule
         return $"({targetProperty} is null || ({lengthAccessor} >= {Min} && {lengthAccessor} <= {Max}))";
     }
 
-    public override (string FailCondition, string ErrorExpression) BuildErrorCheck(string targetProperty, string propertyName)
+    public override (string FailCondition, string ErrorExpression)? BuildErrorCheck(string targetProperty, string propertyName)
     {
         string lengthAccessor = GetLengthAccessor(targetProperty);
 

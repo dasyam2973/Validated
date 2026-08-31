@@ -30,6 +30,9 @@ internal static class TypeNames
     public const string VRegex = "VRegexAttribute";
     public const string VRegexFqn = "Validated.Annotations.VRegexAttribute";
 
+    public const string ValidateCollection = "ValidateCollectionAttribute";
+    public const string ValidateCollectionFqn = "Validated.Annotations.ValidateCollectionAttribute";
+
     #region Value Comparison
     public const string VGreaterThan = "VGreaterThanAttribute";
     public const string VGreaterThanFqn = "Validated.Annotations.VGreaterThanAttribute";

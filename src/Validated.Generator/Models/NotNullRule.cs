@@ -16,7 +16,7 @@ public sealed class NotNullRule : ValidationRule
         return $"({targetProperty} is not null)";
     }
 
-    public override (string FailCondition, string ErrorExpression) BuildErrorCheck(string targetProperty, string propertyName)
+    public override (string FailCondition, string ErrorExpression)? BuildErrorCheck(string targetProperty, string propertyName)
     {
         string failCondition = $"({targetProperty} is null)";
 

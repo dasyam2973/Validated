@@ -78,12 +78,7 @@ internal static class ValidationCodeEmitter
 
                             foreach (var rule in property.Rules)
                             {
-                                var (failCondition, errorExpression) = rule.BuildErrorCheck(targetProperty, property.Name);
-
-                                using (builder.Block($"if ({failCondition})"))
-                                {
-                                    builder.Line($"errors.Add({errorExpression});");
-                                }
+                                rule.EmitValidateCode(builder, targetProperty, property.Name);
 
                                 builder.Line();
                             }
@@ -104,13 +99,7 @@ internal static class ValidationCodeEmitter
 
                             foreach (var rule in property.Rules)
                             {
-                                var (failCondition, errorExpression) = rule.BuildErrorCheck(targetProperty, property.Name);
-
-                                using (builder.Block($"if ({failCondition})"))
-                                {
-                                    builder.Line($"error = {errorExpression};");
-                                    builder.Line("return false;");
-                                }
+                                rule.EmitTryValidateCode(builder, targetProperty, property.Name);
 
                                 builder.Line();
                             }
@@ -140,13 +129,7 @@ internal static class ValidationCodeEmitter
                                 {
                                     foreach (var rule in property.Rules)
                                     {
-                                        var (failCondition, errorExpression) = rule.BuildErrorCheck(targetProperty, property.Name);
-
-                                        using (builder.Block($"if ({failCondition})"))
-                                        {
-                                            builder.Line($"error = {errorExpression};");
-                                            builder.Line("return false;");
-                                        }
+                                        rule.EmitTryValidateCode(builder, targetProperty, property.Name);
                                     }
 
                                     builder.Line("break;");

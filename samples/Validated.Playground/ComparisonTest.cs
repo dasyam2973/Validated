@@ -17,9 +17,13 @@ public partial class ComparisonTest
 
         [property: VGreaterThanProperty("Int")] int BigInt,
 
-        [property: VGreaterThan<string>("Banana")] string String,
+        [property: VEqualProperty("Int")] int IntInt,
 
-        [property: VGreaterThan<MyEnum>(MyEnum.One)] MyEnum MyEnum
+        [property: VNotEqualProperty("Int")] int NotInt,
+
+        [property: VLessThanOrEqual<string>("Banana")] string String,
+
+        [property: VLessThan<MyEnum>(MyEnum.One)] MyEnum MyEnum
     );
 
     public static void Run()
@@ -27,8 +31,10 @@ public partial class ComparisonTest
         ComparisonTestRecord instanceValid = new(
             Int: 15,
             BigInt: 20,
-            String: "Carrot",
-            MyEnum: MyEnum.Two
+            IntInt: 15,
+            NotInt: 0,
+            String: "Apple",
+            MyEnum: MyEnum.Zero
         );
 
         var validResult = instanceValid.Validate();
@@ -39,8 +45,10 @@ public partial class ComparisonTest
         ComparisonTestRecord instanceInvalid = new(
             Int: 10,
             BigInt: 10,
-            String: "Apple",
-            MyEnum: MyEnum.Zero
+            IntInt: 9,
+            NotInt: 10,
+            String: "Carrot",
+            MyEnum: MyEnum.One
         );
 
         var invalidResult = instanceInvalid.Validate();

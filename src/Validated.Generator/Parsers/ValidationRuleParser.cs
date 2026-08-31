@@ -12,17 +12,27 @@ public static class ValidationRuleParser
     {
         new NotNullAttributeParser(),
         new NotEmptyAttributeParser(),
+
         new RangeAttributeParser(),
         new LengthAttributeParser(),
 
         new RegexAttributeParser(),
 
+        new CollectionAttributeParser(),
+
         new ValueComparisonAttributeParser.GreaterThan(),
+        new ValueComparisonAttributeParser.GreaterThanOrEqual(),
+        new ValueComparisonAttributeParser.LessThan(),
+        new ValueComparisonAttributeParser.LessThanOrEqual(),
+        new ValueComparisonAttributeParser.Equal(),
+        new ValueComparisonAttributeParser.NotEqual(),
 
         new PropertyComparisonAttributeParser.GreaterThan(),
         new PropertyComparisonAttributeParser.GreaterThanOrEqual(),
         new PropertyComparisonAttributeParser.LessThan(),
-        new PropertyComparisonAttributeParser.Equal()
+        new PropertyComparisonAttributeParser.LessThanOrEqual(),
+        new PropertyComparisonAttributeParser.Equal(),
+        new PropertyComparisonAttributeParser.NotEqual()
     }.ToDictionary(p => p.TargetAttributeFullName, p => p);
 
     public static ValidationRule? ParseAttribute(

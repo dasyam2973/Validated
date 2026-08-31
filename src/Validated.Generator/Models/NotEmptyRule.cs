@@ -32,7 +32,7 @@ public sealed class NotEmptyRule : ValidationRule
         };
     }
 
-    public override (string FailCondition, string ErrorExpression) BuildErrorCheck(string targetProperty, string propertyName)
+    public override (string FailCondition, string ErrorExpression)? BuildErrorCheck(string targetProperty, string propertyName)
     {
         string failCondition = TargetKind switch
         {

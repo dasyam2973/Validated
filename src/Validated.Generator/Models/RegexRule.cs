@@ -30,7 +30,7 @@ public sealed class RegexRule : ValidationRule
         return $"({targetProperty} is null || {GetFieldName(propertyName)}.IsMatch({targetProperty}))";
     }
 
-    public override (string FailCondition, string ErrorExpression) BuildErrorCheck(string targetProperty, string propertyName)
+    public override (string FailCondition, string ErrorExpression)? BuildErrorCheck(string targetProperty, string propertyName)
     {
         string failCondition = $"({targetProperty} is not null && !{GetFieldName(propertyName)}.IsMatch({targetProperty}))";
 

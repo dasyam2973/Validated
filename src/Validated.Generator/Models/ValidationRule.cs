@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -23,7 +24,38 @@ public abstract class ValidationRule : IEquatable<ValidationRule>
     /// <summary>
     /// 유효성 검사 실패 조건식과 실패 시 VaildationError 객체 생성 표현식을 반환합니다.
     /// </summary>
-    public abstract (string FailCondition, string ErrorExpression) BuildErrorCheck(string targetProperty, string propertyName);
+    public virtual (string FailCondition, string ErrorExpression)? BuildErrorCheck(string targetProperty, string propertyName)
+    {
+        return null;
+    }
+
+    // 일부 규칙에 한해 BuildErrorCheck보다 정교한 Emitting이 필요할 때 사용합니다.
+    public virtual void EmitValidateCode(IndentedStringBuilder builder, string targetProperty, string propertyName)
+    {
+        var result = BuildErrorCheck(targetProperty, propertyName);
+        if (result.HasValue)
+        {
+            var (failCondition, errorExpression) = result.Value;
+            using (builder.Block($"if ({failCondition})"))
+            {
+                builder.Line($"errors.Add({errorExpression});");
+            }
+        }
+    }
+
+    public virtual void EmitTryValidateCode(IndentedStringBuilder builder, string targetProperty, string propertyName)
+    {
+        var result = BuildErrorCheck(targetProperty, propertyName);
+        if (result.HasValue)
+        {
+            var (failCondition, errorExpression) = result.Value;
+            using (builder.Block($"if ({failCondition})"))
+            {
+                builder.Line($"error = {errorExpression};");
+                builder.Line("return false;");
+            }
+        }
+    }
 
     public abstract bool Equals(ValidationRule other);
 

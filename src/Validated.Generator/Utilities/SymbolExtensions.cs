@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using System.Collections.Immutable;
 using System.Linq;
 using Validated.Generator.Enums;
 
@@ -105,5 +104,26 @@ internal static class SymbolExtensions
             return ValidationTargetKind.Enumerable;
 
         return ValidationTargetKind.None;
+    }
+
+    public static ITypeSymbol? GetElementType(this ITypeSymbol typeSymbol)
+    {
+        if (typeSymbol is IArrayTypeSymbol arrayType)
+        {
+            return arrayType.ElementType;
+        }
+
+        if (typeSymbol is INamedTypeSymbol namedType && namedType.IsGenericType)
+        {
+            var ienumerableInterface = namedType.AllInterfaces
+                .FirstOrDefault(i => i.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IEnumerable<T>");
+
+            if (ienumerableInterface != null)
+            {
+                return ienumerableInterface.TypeArguments[0];
+            }
+        }
+
+        return null;
     }
 }

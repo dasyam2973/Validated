@@ -19,8 +19,18 @@ partial class PropertyComparisonAttributeParser
         public override string TargetAttributeFullName => TypeNames.VLessThanPropertyFqn;
     }
 
+    internal sealed class LessThanOrEqual : PropertyComparisonAttributeParser
+    {
+        public override string TargetAttributeFullName => TypeNames.VLessThanOrEqualPropertyFqn;
+    }
+
     internal sealed class Equal : PropertyComparisonAttributeParser
     {
         public override string TargetAttributeFullName => TypeNames.VEqualPropertyFqn;
+    }
+
+    internal sealed class NotEqual : PropertyComparisonAttributeParser
+    {
+        public override string TargetAttributeFullName => TypeNames.VNotEqualPropertyFqn;
     }
 }

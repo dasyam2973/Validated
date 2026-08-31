@@ -20,7 +20,7 @@ public sealed class RangeRule : ValidationRule
         return $"({targetProperty} == null || {targetProperty} >= {Min} && {targetProperty} <= {Max})";
     }
 
-    public override (string FailCondition, string ErrorExpression) BuildErrorCheck(string targetProperty, string propertyName)
+    public override (string FailCondition, string ErrorExpression)? BuildErrorCheck(string targetProperty, string propertyName)
     {
         string failCondition = $"({targetProperty} != null && ({targetProperty} < {Min} || {targetProperty} > {Max}))";
 

@@ -39,7 +39,7 @@ public sealed class PropertyComparisonRule : ValidationRule
         };
     }
 
-    public override (string FailCondition, string ErrorExpression) BuildErrorCheck(string targetProperty, string propertyName)
+    public override (string FailCondition, string ErrorExpression)? BuildErrorCheck(string targetProperty, string propertyName)
     {
         string failCondition = $"(!global::Validated.ValidationHelpers.Compare({targetProperty}, {OtherProperty}, global::Validated.ComparisonOperator.{Operator}))";
 

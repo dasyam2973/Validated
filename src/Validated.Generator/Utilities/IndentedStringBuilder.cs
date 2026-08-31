@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Validated.Generator.Utilities;
 
-internal class IndentedStringBuilder
+public sealed class IndentedStringBuilder
 {
     private readonly StringBuilder _sb = new();
     private int _indentLevel = 0;

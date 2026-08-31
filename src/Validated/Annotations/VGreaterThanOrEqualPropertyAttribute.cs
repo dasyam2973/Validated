@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Validated.Annotations;
+﻿namespace Validated.Annotations;
 
 public sealed class VGreaterThanOrEqualPropertyAttribute : ValidationRuleAttribute
 {

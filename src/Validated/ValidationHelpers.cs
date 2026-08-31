@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Validated;
@@ -23,5 +25,80 @@ public static class ValidationHelpers
             ComparisonOperator.LessThanOrEqual => result <= 0,
             _ => true
         };
+    }
+
+    public static bool IsCollectionValid<T>(IEnumerable<T>? collection, Func<T, bool> isValidPredicate)
+    {
+        if (collection == null) return true;
+        foreach (var item in collection)
+        {
+            if (item != null && !isValidPredicate(item)) return false;
+        }
+        return true;
+    }
+
+    public static void ValidateCollection<T>(
+        IEnumerable<T>? collection,
+        string propertyName,
+        List<ValidationError> errors,
+        Func<T, ValidationResult> validateAction)
+    {
+        if (collection == null) return;
+
+        int index = 0;
+        foreach (var item in collection)
+        {
+            if (item != null)
+            {
+                var result = validateAction(item);
+                if (!result.IsValid)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        // 예: "Items" + "[0]" + "." + "Price" => "Items[0].Price"
+                        string fullPath = string.IsNullOrEmpty(error.PropertyName)
+                            ? $"{propertyName}[{index}]"
+                            : $"{propertyName}[{index}].{error.PropertyName}";
+
+                        errors.Add(new ValidationError(fullPath, error.Message, error.RuleName));
+                    }
+                }
+            }
+            index++;
+        }
+    }
+
+    public static bool TryValidateCollection<T>(
+        IEnumerable<T>? collection,
+        string propertyName,
+        out ValidationError error,
+        Func<T, ValidationResult> validateAction)
+    {
+        if (collection == null)
+        {
+            error = default;
+            return true;
+        }
+
+        int index = 0;
+        foreach (var item in collection)
+        {
+            if (item != null)
+            {
+                var result = validateAction(item);
+                if (!result.IsValid)
+                {
+                    string fullPath = string.IsNullOrEmpty(result.Errors[0].PropertyName)
+                        ? $"{propertyName}[{index}]"
+                        : $"{propertyName}[{index}].{result.Errors[0].PropertyName}";
+                    error = new ValidationError(fullPath, result.Errors[0].Message, result.Errors[0].RuleName);
+                    return false;
+                }
+            }
+            index++;
+        }
+
+        error = default;
+        return true;
     }
 }
