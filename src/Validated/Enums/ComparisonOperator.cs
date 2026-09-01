@@ -1,4 +1,4 @@
-﻿namespace Validated;
+﻿namespace Validated.Enums;
 
 public enum ComparisonOperator
 {

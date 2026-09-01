@@ -22,7 +22,7 @@ public sealed class PropertyComparisonRule : ValidationRule
 
     public override string BuildCondition(string targetProperty, string propertyName)
     {
-        return $"(global::Validated.ValidationHelpers.Compare({targetProperty}, {OtherProperty}, global::Validated.ComparisonOperator.{Operator}))";
+        return $"({TypeNames.ValidationHelpersFqn}.Compare({targetProperty}, {OtherProperty}, {TypeNames.ComparisonOperatorFqn}.{Operator}))";
     }
 
     public static string GetComparisonErrorMessage(ComparisonOperator op)
@@ -41,7 +41,7 @@ public sealed class PropertyComparisonRule : ValidationRule
 
     public override (string FailCondition, string ErrorExpression)? BuildErrorCheck(string targetProperty, string propertyName)
     {
-        string failCondition = $"(!global::Validated.ValidationHelpers.Compare({targetProperty}, {OtherProperty}, global::Validated.ComparisonOperator.{Operator}))";
+        string failCondition = $"(!{TypeNames.ValidationHelpersFqn}.Compare({targetProperty}, {OtherProperty}, {TypeNames.ComparisonOperatorFqn}.{Operator}))";
 
         string errorMessageTemplate = GetErrorMessageExpression(GetComparisonErrorMessage(Operator), CustomErrorMessage!);
 

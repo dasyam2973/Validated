@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
+using Validated.Enums;
 
-namespace Validated;
+namespace Validated.Utilities;
 
 public static class ValidationHelpers
 {
@@ -55,7 +55,6 @@ public static class ValidationHelpers
                 {
                     foreach (var error in result.Errors)
                     {
-                        // 예: "Items" + "[0]" + "." + "Price" => "Items[0].Price"
                         string fullPath = string.IsNullOrEmpty(error.PropertyName)
                             ? $"{propertyName}[{index}]"
                             : $"{propertyName}[{index}].{error.PropertyName}";

@@ -5,9 +5,11 @@ internal static class TypeNames
     public const string ValidatedNamespace = "Validated";
     public const string AnnotationsNamespace = "Validated.Annotations";
 
-    public const string ValidationMessageHelpersFqn = "global::Validated.ValidationMessageHelpers";
-    public const string ValidationErrorMessagesFqn = "global::Validated.ValidationErrorMessages";
+    public const string ValidationMessageHelpersFqn = "global::Validated.Utilities.ValidationMessageHelpers";
+    public const string ValidationErrorMessagesFqn = "global::Validated.Constants.ValidationErrorMessages";
     public const string ValidationErrorFqn = "global::Validated.ValidationError";
+    public const string ValidationHelpersFqn = "global::Validated.Utilities.ValidationHelpers";
+    public const string ComparisonOperatorFqn = "global::Validated.Enums.ComparisonOperator";
 
     public const string ValidatableAttribute = "ValidatableAttribute";
     public const string ValidatableAttributeFqn = "Validated.Annotations.ValidatableAttribute";

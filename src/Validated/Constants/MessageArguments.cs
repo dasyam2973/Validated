@@ -1,4 +1,4 @@
-﻿namespace Validated;
+﻿namespace Validated.Constants;
 
 public static class MessageArguments
 {

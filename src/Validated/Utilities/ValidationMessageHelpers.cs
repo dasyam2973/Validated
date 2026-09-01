@@ -1,4 +1,6 @@
-﻿namespace Validated;
+﻿using Validated.Constants;
+
+namespace Validated.Utilities;
 
 public static class ValidationMessageHelpers
 {

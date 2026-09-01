@@ -16,9 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Validated.Generator\Validated.Generator.csproj"
-					  OutputItemType="Analyzer"
-					  ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Validated.Generator\Validated.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	<!-- <PackageReference Include="Validated.Generator" Version="1.0.0" PrivateAssets="analyzers" /> -->
   </ItemGroup>
 

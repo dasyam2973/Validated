@@ -1,6 +1,6 @@
-﻿using Args = Validated.MessageArguments;
+﻿using Args = Validated.Constants.MessageArguments;
 
-namespace Validated;
+namespace Validated.Constants;
 
 public static class ValidationErrorMessages
 {

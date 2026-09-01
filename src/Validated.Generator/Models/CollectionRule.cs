@@ -1,4 +1,5 @@
-﻿using Validated.Generator.Utilities;
+﻿using Validated.Generator.Constants;
+using Validated.Generator.Utilities;
 
 namespace Validated.Generator.Models;
 
@@ -13,17 +14,17 @@ public sealed class CollectionRule : ValidationRule
 
     public override string BuildCondition(string targetProperty, string propertyName)
     {
-        return $"(global::Validated.ValidationHelpers.IsCollectionValid({targetProperty}, static x => x.IsValid))";
+        return $"({TypeNames.ValidationHelpersFqn}.IsCollectionValid({targetProperty}, static x => x.IsValid))";
     }
 
     public override void EmitValidateCode(IndentedStringBuilder builder, string targetProperty, string propertyName)
     {
-        builder.Line($"global::Validated.ValidationHelpers.ValidateCollection({targetProperty}, \"{propertyName}\", errors, static x => x.Validate());");
+        builder.Line($"{TypeNames.ValidationHelpersFqn}.ValidateCollection({targetProperty}, \"{propertyName}\", errors, static x => x.Validate());");
     }
 
     public override void EmitTryValidateCode(IndentedStringBuilder builder, string targetProperty, string propertyName)
     {
-        using (builder.Block($"if (!global::Validated.ValidationHelpers.TryValidateCollection({targetProperty}, \"{propertyName}\", out error, static x => x.Validate()))"))
+        using (builder.Block($"if (!{TypeNames.ValidationHelpersFqn}.TryValidateCollection({targetProperty}, \"{propertyName}\", out error, static x => x.Validate()))"))
         {
             builder.Line("return false;");
         }
